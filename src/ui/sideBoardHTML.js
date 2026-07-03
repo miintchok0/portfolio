@@ -64,6 +64,14 @@ export const sideBoardHTML = `
       >
 
       <div
+        id="music-sticker"
+        class="mail-sticker music-sticker sticker-draggable"
+        style="left:120px; top:400px; transform:rotate(4deg);"
+      >
+        <img src="/stickers/music.gif" alt="music">
+      </div>
+
+      <div
         id="mail-sticker"
         class="mail-sticker sticker-draggable"
         style="left:250px; top:150px; width:7p0x; transform:rotate(-4deg);"

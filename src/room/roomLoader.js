@@ -8,17 +8,19 @@ export function loadRoom({
   clickableGroups,
   pcNames,
   crtNames,
-  makeupNames
+  makeupNames,
+  onProgress,
+  onLoad
 }) {
-  const loader = new GLTFLoader()
+  const gltfLoader = new GLTFLoader()
 
-  loader.load(
+  gltfLoader.load(
     '/models/3droom.glb',
 
     (gltf) => {
       const room = gltf.scene
       scene.add(room)
-      
+
       setupDailyObjects(room)
 
       room.traverse((child) => {
@@ -45,23 +47,21 @@ export function loadRoom({
           child.material.needsUpdate = true
         }
 
-        if (pcNames.includes(child.name)) {
-          clickableGroups.pc.push(child)
-        }
-
-        if (crtNames.includes(child.name)) {
-          clickableGroups.crt.push(child)
-        }
-
-        if (makeupNames.includes(child.name)) {
-          clickableGroups.makeup.push(child)
-        }
+        if (pcNames.includes(child.name)) clickableGroups.pc.push(child)
+        if (crtNames.includes(child.name)) clickableGroups.crt.push(child)
+        if (makeupNames.includes(child.name)) clickableGroups.makeup.push(child)
       })
 
       console.log('Stanza caricata')
+      onLoad?.()
     },
 
-    undefined,
+    (progress) => {
+      if (!progress.total) return
+
+      const percent = (progress.loaded / progress.total) * 100
+      onProgress?.(percent)
+    },
 
     (error) => {
       console.error(error)

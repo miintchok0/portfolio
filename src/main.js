@@ -18,21 +18,32 @@ import { createRoomVideos } from './room/videoTextures.js'
 import { loadRoom } from './room/roomLoader.js'
 import { pcNames, crtNames, makeupNames } from './room/constants.js'
 import { setupInteractions } from './room/interactions.js'
+import { musicPlayerHTML } from './ui/musicPlayerHTML.js'
+import { setupMusicPlayer } from './ui/musicPlayer.js'
+import { blinkiesHTML } from './ui/blinkiesHTML.js'
+import { setupBlinkies } from './ui/blinkies.js'
+import { loaderHTML } from './ui/loaderHTML.js'
+import { setupLoader } from './ui/loader.js'
 
 const app = document.querySelector('#app')
 
 app.innerHTML = `
 <canvas id="three-canvas"></canvas>
+${loaderHTML}
 ${pcWindowHTML}
 ${ps2WindowHTML}
 ${sideBoardHTML}
+${blinkiesHTML}
+${musicPlayerHTML}
 ${makeupWindowHTML}
 `
-
+const loader = setupLoader()
 
 const canvas = document.querySelector('#three-canvas')
 
 setupSideBoard()
+setupMusicPlayer()
+setupBlinkies()
 
 const pcWindowLayer = document.querySelector('#pc-window-test')
 
@@ -150,7 +161,15 @@ loadRoom({
   clickableGroups,
   pcNames,
   crtNames,
-  makeupNames
+  makeupNames,
+
+  onProgress(percent) {
+    loader.setProgress(percent)
+  },
+
+  onLoad() {
+    loader.complete()
+  }
 })
 
 setupInteractions({
@@ -190,3 +209,18 @@ window.addEventListener('resize', () => {
   composer.setSize(window.innerWidth, window.innerHeight)
   outlinePass.setSize(window.innerWidth, window.innerHeight)
 })
+
+const favicon = document.querySelector('#favicon')
+
+const favicons = [
+  '/favicon1.png',
+  '/favicon2.png'
+]
+
+let faviconIndex = 0
+
+setInterval(() => {
+  faviconIndex = (faviconIndex + 1) % favicons.length
+
+  favicon.href = `${favicons[faviconIndex]}?v=${Date.now()}`
+}, 500)
