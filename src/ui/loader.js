@@ -20,17 +20,17 @@ export function setupLoader() {
     }
   }
 
-  function complete() {
-    setProgress(100)
+function complete() {
+  setProgress(100)
 
-    setTimeout(() => {
-  loader?.classList.add('loaded')
-}, 5000)
+  setTimeout(() => {
+    loader?.classList.add('loaded')
+  }, 300)
 
-setTimeout(() => {
-  loader?.remove()
-}, 6000)
-  }
+  setTimeout(() => {
+    loader?.remove()
+  }, 900)
+}
 
   return {
     setProgress,
