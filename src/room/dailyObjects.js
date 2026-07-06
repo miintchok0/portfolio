@@ -1,39 +1,47 @@
-export function setupDailyObjects(room) {
-  const drinks = [
-    'birrozza',
-    'cola',
-    'estathe'
-  ]
+export const dailyDrinkNames = [
+  'birrozza',
+  'cola',
+  'estathe'
+]
 
-  const foods = [
-    'ciccia',
-    'gelato',
-    'pancake',
-    'panino',
-    'pizza',
-    'ramen',
-    'rustiche'
-  ]
+export const dailyFoodNames = [
+  'ciccia',
+  'gelato',
+  'pancake',
+  'panino',
+  'pizza',
+  'ramen',
+  'rustiche'
+]
+
+export function setupDailyObjects(room) {
+  const activeDailyObjects = []
 
   const dayIndex = getDayOfYear()
 
-  const activeDrink = drinks[dayIndex % drinks.length]
-  const activeFood = foods[dayIndex % foods.length]
+  const activeDrink = dailyDrinkNames[dayIndex % dailyDrinkNames.length]
+  const activeFood = dailyFoodNames[dayIndex % dailyFoodNames.length]
 
   room.traverse((child) => {
     if (!child.isObject3D) return
 
-    if (drinks.includes(child.name)) {
+    if (dailyDrinkNames.includes(child.name)) {
       child.visible = child.name === activeDrink
     }
 
-    if (foods.includes(child.name)) {
+    if (dailyFoodNames.includes(child.name)) {
       child.visible = child.name === activeFood
+    }
+
+    if (child.visible && (child.name === activeDrink || child.name === activeFood)) {
+      activeDailyObjects.push(child)
     }
   })
 
   console.log('drink del giorno:', activeDrink)
   console.log('food del giorno:', activeFood)
+
+  return activeDailyObjects
 }
 
 function getDayOfYear() {

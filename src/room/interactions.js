@@ -13,24 +13,58 @@ export function setupInteractions({
 }) {
   const raycaster = new THREE.Raycaster()
   const mouse = new THREE.Vector2()
+  const hint = document.createElement('div')
 
   let hoveredGroup = null
+  let hoveredHint = null
+
+  hint.className = 'room-hover-hint'
+  document.body.appendChild(hint)
 
   function getGroupFromObject(object) {
     if (clickableGroups.pc.includes(object)) return 'pc'
     if (clickableGroups.crt.includes(object)) return 'crt'
     if (clickableGroups.makeup.includes(object)) return 'makeup'
+    if (clickableGroups.daily.includes(object)) return 'daily'
     return null
+  }
+
+  function moveHint(event) {
+    hint.style.left = `${event.clientX}px`
+    hint.style.top = `${event.clientY}px`
+  }
+
+  function showHint(message, event) {
+    if (hoveredHint !== message) {
+      hint.textContent = message
+      hoveredHint = message
+    }
+
+    moveHint(event)
+    hint.classList.add('visible')
+  }
+
+  function hideHint() {
+    hoveredHint = null
+    hint.classList.remove('visible')
   }
 
   function clearHover() {
     hoveredGroup = null
     outlinePass.selectedObjects = []
     document.body.style.cursor = 'default'
+    hideHint()
   }
 
-  function setHover(groupName) {
+  function setHover(groupName, event) {
     hoveredGroup = groupName
+
+    if (groupName === 'daily') {
+      outlinePass.selectedObjects = []
+      document.body.style.cursor = 'help'
+      showHint("I wonder what I'll eat tomorrow...", event)
+      return
+    }
 
     if (groupName === 'pc') {
       outlinePass.selectedObjects = clickableGroups.pc
@@ -49,12 +83,24 @@ export function setupInteractions({
 
     outlinePass.hiddenEdgeColor.set('#05050a')
     document.body.style.cursor = 'pointer'
+    showHint('double click here!', event)
   }
 
   window.addEventListener('mousemove', (event) => {
-    if (!pcWindowLayer.classList.contains('hidden')) return
-    if (ps2Window.isOpen()) return
-    if (makeupWindow.isOpen()) return
+    if (!pcWindowLayer.classList.contains('hidden')) {
+      clearHover()
+      return
+    }
+
+    if (ps2Window.isOpen()) {
+      clearHover()
+      return
+    }
+
+    if (makeupWindow.isOpen()) {
+      clearHover()
+      return
+    }
 
     mouse.x = (event.clientX / window.innerWidth) * 2 - 1
     mouse.y = -(event.clientY / window.innerHeight) * 2 + 1
@@ -62,8 +108,9 @@ export function setupInteractions({
     const allClickable = [
       ...clickableGroups.pc,
       ...clickableGroups.crt,
-      ...clickableGroups.makeup
-    ]
+      ...clickableGroups.makeup,
+      ...clickableGroups.daily
+    ].filter((object) => object.visible)
 
     raycaster.setFromCamera(mouse, camera)
 
@@ -81,7 +128,7 @@ export function setupInteractions({
       return
     }
 
-    setHover(groupName)
+    setHover(groupName, event)
   })
 
   window.addEventListener('dblclick', () => {

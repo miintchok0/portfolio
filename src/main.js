@@ -95,11 +95,11 @@ controls.rotateSpeed = 0.43
 controls.zoomSpeed = 0.8
 controls.panSpeed = 0.5
 controls.minDistance = 0
-controls.maxDistance = Infinity
+controls.maxDistance = 3
 controls.minPolarAngle = 0
 controls.maxPolarAngle = Math.PI
-controls.minAzimuthAngle = -Infinity
-controls.maxAzimuthAngle = Infinity
+controls.minAzimuthAngle = -2
+controls.maxAzimuthAngle = 0.5
 controls.target.set(-0.1, 1.3, -0.5)
 controls.update()
 
@@ -152,7 +152,8 @@ const makeupWindow = setupMakeupWindow({
 const clickableGroups = {
   pc: [],
   crt: [],
-  makeup: []
+  makeup: [],
+  daily: []
 }
 
 loadRoom({

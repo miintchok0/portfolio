@@ -5,6 +5,18 @@ export function setupLoader() {
   const text = document.querySelector('#loader-text')
 
   let current = 0
+  const startedAt = Date.now()
+  const minimumVisibleMs = 1800
+  let isComplete = false
+  const fakeProgress = window.setInterval(() => {
+    if (isComplete) return
+
+    const nextTarget = current < 55
+      ? current + 4 + Math.random() * 8
+      : current + 0.8 + Math.random() * 3
+
+    setProgress(Math.min(nextTarget, 92))
+  }, 180)
 
   function setProgress(value) {
     current = Math.max(current, Math.min(value, 100))
@@ -20,17 +32,23 @@ export function setupLoader() {
     }
   }
 
-function complete() {
-  setProgress(100)
+  function complete() {
+    const remainingVisibleTime = Math.max(0, minimumVisibleMs - (Date.now() - startedAt))
 
-  setTimeout(() => {
-    loader?.classList.add('loaded')
-  }, 300)
+    setTimeout(() => {
+      isComplete = true
+      window.clearInterval(fakeProgress)
+      setProgress(100)
 
-  setTimeout(() => {
-    loader?.remove()
-  }, 900)
-}
+      setTimeout(() => {
+        loader?.classList.add('loaded')
+      }, 450)
+
+      setTimeout(() => {
+        loader?.remove()
+      }, 1100)
+    }, remainingVisibleTime)
+  }
 
   return {
     setProgress,

@@ -18,6 +18,29 @@ body {
   display: block;
 }
 
+.room-hover-hint {
+  position: fixed;
+  z-index: 45;
+  transform: translate(14px, -100%);
+  padding: 5px 8px;
+  background: #a8e9ffb8;
+  border: 2px outset #fff;
+  box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.55);
+  color: #120021;
+  font: bold 12px "Comic Sans MS", "Trebuchet MS", Arial, sans-serif;
+  line-height: 1;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.08s ease;
+}
+
+.room-hover-hint.visible {
+  opacity: 1;
+  visibility: visible;
+}
+
 /* ─── PC Window overlay ─── */
 
 .pc-window-test {

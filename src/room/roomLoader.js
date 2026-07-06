@@ -21,7 +21,7 @@ export function loadRoom({
       const room = gltf.scene
       scene.add(room)
 
-      setupDailyObjects(room)
+      const activeDailyObjects = setupDailyObjects(room)
 
       room.traverse((child) => {
         if (!child.isMesh) return
@@ -51,6 +51,8 @@ export function loadRoom({
         if (crtNames.includes(child.name)) clickableGroups.crt.push(child)
         if (makeupNames.includes(child.name)) clickableGroups.makeup.push(child)
       })
+
+      clickableGroups.daily.push(...activeDailyObjects.filter((object) => object.isMesh))
 
       console.log('Stanza caricata')
       onLoad?.()
